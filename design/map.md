@@ -28,6 +28,7 @@ eharness/                ← 리포·CLI 이름은 우산(eharness) 유지
 | 공통 배선 규약 (wire) | 부분 | **채택 → R1** | hooks --install 패턴을 스킬·에이전트·권한까지 일반화. 증거: 전역 스킬 수동 관리 반복 |
 | 에이전트 통신 (comm) | 있음 | 채택 (운용 중) | 2026-09-04 배선 — `cctv-register` 스킬(자기 sid 해석 → parent/child/group API). 훅 없음(SubagentStart 제외 결정) |
 | 실측 테스트 게이트 (probe) | 있음 | 채택 (운용 중) | 2026-09-04 배선 — `probe-playwright` 스킬: 루프 에러가 실측 필요 시 **사용자 질문 승인 후에만** Playwright 진행(최초 human-approve 능력). no-browser 원칙의 공식 예외 경로 |
+| 관제 요약 (status) | 있음 | 채택 (운용 중) | 2026-09-04 배선 — `cctv-status` 서브에이전트(첫 agent 자산): API 대형 JSON을 대신 읽고 ≤15줄 요약만 부모 반환(charter §4 격리·요약 기준 1호 적용). 에이전트는 핫로드 안 됨(세션 시작 로드) |
 | khaness 퇴역·이관 | — | **완료 2026-09-04** | 이관 판정표 실행 완료 — guard-policy만 보류 후보로 khaness 리포에 보존 |
 | 골 온톨로지 (goal) | 없음 | 보류 | what 영토(`~/.eharness/state/`) 1호 후보. 장기 다세션 작업에서 목표 유실 증거 2회 시 재판정 |
 | 플랜/런타임 분리 | 없음 | 보류 | 플랜은 spec 스킬군에 있음. 런타임 가드 상태파일의 pain 증거 대기 |
@@ -50,7 +51,7 @@ eharness/                ← 리포·CLI 이름은 우산(eharness) 유지
 | Skills (온디맨드 지침) | **사용 중** | comm 능력(cctv-register) + spec 스킬군(외부 자산) |
 | 훅 | 관측면만 사용 | 제어면 훅은 비어 있음 — 가드 능력(보류)이 첫 후보 |
 | 도구 / MCP | 규약 커버 | Playwright MCP는 전역 등록(외부 자산). 사용 규약 = probe 능력(승인 게이트). 그 외 MCP는 수요 시 |
-| 서브에이전트 · Workflows · Agent Teams | 외부 자산 (관측 대상) | 제품 기능 — cctv가 계층·통신으로 관측, 우리는 만들지 않음 |
+| 서브에이전트 · Workflows · Agent Teams | 관측 + 자산 1 | 제품 기능은 cctv가 관측. 자체 자산은 `cctv-status`(status 능력) 1개 — 격리·요약 반환 기준 준수. 오케스트레이션은 여전히 안 만듦 |
 | 검증 (verification) | 부분 | 설계층은 게이트 5 + 스펙 verify. 작업 루프 판정부는 비어 있음(아티팩트 S9, R4 후보) |
 | 컨텍스트 관리 (Auto-compaction · Tool Search) | 제품 기능 | 우리 몫은 §4 상시/온디맨드 분리 기준 준수 |
 | Auto Memory | 사용 중 | 프로젝트·피드백 기억이 자동 축적 — 별도 설계 불요 |
