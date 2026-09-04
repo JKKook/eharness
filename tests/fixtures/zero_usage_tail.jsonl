@@ -1,0 +1,4 @@
+{"type":"user","message":{"role":"user","content":"작업 시작"}}
+{"type":"assistant","timestamp":"2026-08-19T02:32:33Z","message":{"model":"claude-fable-5","usage":{"input_tokens":2,"cache_read_input_tokens":196726,"cache_creation_input_tokens":943,"output_tokens":878},"content":[{"type":"tool_use","name":"Edit","input":{}},{"type":"tool_use","name":"Bash","input":{}}]}}
+{"type":"ai-title","aiTitle":"이미지 파이프라인 상한선"}
+{"type":"assistant","timestamp":"2026-08-29T07:07:51Z","message":{"model":"claude-fable-5","usage":{"input_tokens":0,"cache_read_input_tokens":0,"cache_creation_input_tokens":0,"output_tokens":0},"content":[]}}
