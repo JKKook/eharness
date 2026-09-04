@@ -269,6 +269,7 @@ td.ttl .tl1 .tlx{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
 <header>
   <h1>cctv</h1>
   <span class="kv"><span class="dot" id="dot"></span><span id="clock">—</span></span>
+  <span class="kv mono" id="cpu" data-tip="OS 부하 (1분 load average ÷ 논리 코어 수) — 100% 이상 = 코어보다 대기 작업이 많음"></span>
   <span class="kv" id="err" style="color:var(--crit)"></span>
   <nav id="tabs" role="tablist"><span class="lbl">보기</span>
     <button class="ui tab on" role="tab" data-view="overview"><b>전체</b></button>
@@ -428,6 +429,10 @@ async function sessions(){
   try{const d=await (await fetch('/api/sessions')).json(); home=d.home; rows=d.rows; tree=d.tree||null; loaded=true;
     $('#dot').className='dot'; if($('#err').textContent.startsWith('수집기'))$('#err').textContent='';
     $('#clock').textContent=new Date().toLocaleTimeString('ko-KR',{hour12:false});
+    const sy=d.sys||{};
+    if(sy.load1!=null&&sy.cores){const r=sy.load1/sy.cores;
+      $('#cpu').textContent=`CPU ${sy.load1.toFixed(1)}/${sy.cores}코어 (${Math.round(r*100)}%)`;
+      $('#cpu').style.color=r>=1?'var(--crit)':(r>=.7?'var(--st-run)':'var(--muted)');}
   }catch(e){$('#dot').className='dot off';$('#err').textContent='수집기 연결 안 됨 (eharness collect)';return;}
   renderAll();
 }

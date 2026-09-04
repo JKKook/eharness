@@ -17,7 +17,12 @@ def _refresh():
     from .collect import collect
     t = time.time()
     rows, window, tree = collect(subagents=True)
+    try:
+        load1 = os.getloadavg()[0]
+    except OSError:
+        load1 = None
     body = json.dumps({"rows": [{**r, "tools": dict(r["tools"])} for r in rows], "window": window, "tree": tree,
+                       "sys": {"load1": load1, "cores": os.cpu_count()},
                        "home": os.path.expanduser("~"), "ts": time.time(), "took_ms": round((time.time() - t) * 1000)}, ensure_ascii=False).encode()
     with _cache["lock"]:
         _cache["body"], _cache["t"] = body, time.time()
