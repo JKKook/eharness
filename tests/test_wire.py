@@ -64,6 +64,17 @@ class TestWire(unittest.TestCase):
         with self.assertRaises(SystemExit):
             core.install("dummy")
 
+    def test_rejects_broken_script(self):
+        w(os.path.join(core.SCAFFOLD, "skills", "dummy-skill", "bad.sh"), "if [ x\nthen\n")  # 문법 오류
+        with self.assertRaises(SystemExit):
+            core.install("dummy")
+
+    def test_rejects_incomplete_hook(self):
+        w(os.path.join(core.SCAFFOLD, "hooks", "dummy.json"), json.dumps(
+            {"capability": "dummy", "events": [], "hook": {"type": "command", "command": "/bin/true"}}))
+        with self.assertRaises(SystemExit):
+            core.install("dummy")
+
 
 if __name__ == "__main__":
     unittest.main()

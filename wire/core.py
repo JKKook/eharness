@@ -6,7 +6,7 @@
 - settings.json 병합은 cctv/hooks.py와 같은 규약: 백업 → tmp 쓰기 → os.replace, 멱등.
 - 설치 내역은 EH_HOME/wire.json에 기록 — uninstall이 정확히 그만큼만 걷는다.
 """
-import json, os, shutil, time
+import json, os, shutil, subprocess, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 SCAFFOLD = os.path.join(ROOT, "scaffold")
@@ -99,12 +99,33 @@ def _abs_command(cmd):
     return cmd if os.path.isabs(cmd) else os.path.join(ROOT, cmd)
 
 
+def _validate(a):
+    """설치 전 자산 검증 — 문법 깨진 스크립트·불완전한 훅 선언은 배선 자체를 거부한다."""
+    for name in a["skills"]:
+        d = os.path.join(SCAFFOLD, "skills", name)
+        for root, _, files in os.walk(d):
+            for f in files:
+                if f.endswith(".sh"):
+                    p = os.path.join(root, f)
+                    r = subprocess.run(["bash", "-n", p], capture_output=True, text=True)
+                    if r.returncode != 0:
+                        raise SystemExit(f"거부: 스크립트 문법 오류 {p} — {r.stderr.strip()}")
+    for decl in a["hooks"]:
+        evs = decl.get("events")
+        cmd = (decl.get("hook") or {}).get("command")
+        if not (isinstance(evs, list) and evs and all(isinstance(e, str) for e in evs)):
+            raise SystemExit(f"거부: 훅 선언에 events 문자열 리스트 필요 — {decl.get('capability')}")
+        if not isinstance(cmd, str) or not cmd:
+            raise SystemExit(f"거부: 훅 선언에 hook.command 필요 — {decl.get('capability')}")
+
+
 def install(cap):
     if not os.path.exists(os.path.join(SPECS, f"{cap}.md")):
         raise SystemExit(f"거부: design/specs/{cap}.md 없음 — 게이트 5(선언) 미통과. 스펙부터 작성하라.")
     a = discover(cap)
     if not (a["skills"] or a["agents"] or a["hooks"]):
         raise SystemExit(f"거부: scaffold에 capability:{cap} 자산이 없다.")
+    _validate(a)
     rec = _load_record()
     mine = rec.get(cap, {"skills": [], "agents": [], "hooks": []})
     entry = {"skills": [], "agents": [], "hooks": [], "ts": time.strftime("%Y-%m-%dT%H:%M:%S")}
