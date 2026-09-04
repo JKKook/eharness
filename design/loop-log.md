@@ -1,0 +1,39 @@
+# cctv 루프 실측 대장 (loop-log, append-only)
+
+> 하네스 능력들이 실전에서 도는 **루프**(왕복 사이클)를 상시 측정·기록한다. 판정은 하지 않는다 —
+> 여기 쌓인 수치가 charter §2 게이트 1(증거)·드리프트 대조기 재판정(2026-09-18)의 입력이 된다.
+> 기록 주체: 관제 그룹 `loop-eng`에 등록된 기록 세션(자가 페이스 wakeup, 읽기 전용 조회만).
+> 원천: 이벤트 버스 `~/.eharness/events/*.jsonl` + 수집기 API. 시각은 UTC(Z).
+
+## 측정 루프 정의
+
+| 루프 | 사이클 | 측정치 | 원천 이벤트 |
+|---|---|---|---|
+| L1 dispatch | 리더 SendMessage(to=이름) → 팀원 회신(to=uds:) | 발송·회신 건수, 첫 회신 지연(분), 10분 무회신 = 지연 신호 | PreToolUse tool=SendMessage |
+| L2 turn | UserPromptSubmit → Stop | 프롬프트·Stop 수, 도구/프롬프트, 실패율, 미종결(pre−post−fail) | UserPromptSubmit·Stop·Pre/PostToolUse(+Failure) |
+| L3 subagent | SubagentStart → Stop | 유형별 건수(cctv-status 사용 포함), Skill/Agent 호출 수 | SubagentStart/Stop·tool=Skill/Agent |
+| L4 probe | 에러 → 승인 질문 → 실측 | 대리 지표: 브라우저 MCP 도구 실패 수(직접 신호 없음 — 아래 계측 공백) | PostToolUseFailure tool=mcp__* |
+| L5 collector | 3초 폴링·훅 push | health, 행 수, took_ms, 스키마 이탈 이벤트 | /health·/api/sessions |
+
+항목 형식: `### #NNNN YYYY-MM-DD HH:MMZ · 창 <since→now>` 아래 L1~L5 한 줄씩 + `발견`·`계측 공백`·`잔여`.
+아무 변화 없는 틱은 기록하지 않는다(대장은 변화만 담는다).
+
+## 계측 공백 (버스가 답하지 못하는 것 — 드리프트 대조기 증거)
+
+- G1 `tool=Skill` 이벤트에 스킬 이름이 없다 → cctv-register·probe-playwright·cctv-dispatch 사용 횟수를 직접 셀 수 없음 (2026-09-04 발견)
+- G2 `SubagentStop`의 `agent_type` 대부분 None(4일간 129건 중 121건) → Start와 짝 맞추기 불가
+- G3 `sessionEnd`(소문자) 변형 1건(2026-09-04T00:57Z) — 이벤트명 스키마 이탈
+- G4 `Notification`에 종류(source) 없음 69/69 → 입력 대기 vs 권한 요청 구분 불가
+- G5 dispatch 회신은 `to=uds:` 소켓 경로만 남아 수신자 이름을 역해석해야 함(현재 발송 후 첫 uds 송신을 회신으로 추정)
+
+## 항목
+
+### #0001 2026-09-04 04:25Z · 창 2026-09-01→04 (기준선, 4일 4,879건)
+
+- L1 dispatch: 리더 발송 6건(bibim-intel-agent-33→ethan-9d 4·bibim-pms-web-e9 2), 회신 확인 4건, 첫 회신 지연 0.5·0.7·2.3·3.1분. 무회신 2건 — 09-03 07:47Z(다음날까지 없음), **09-04 04:02Z ethan-9d(10분 무회신 = 회신 규약 v2 지연 신호 1호**, 04:06Z Notification 발생 → 입력 대기 추정, G4로 확정 불가)
+- L2 turn: 일별 prompts 39/106/120/60 · tools/prompt 10.5→5.5→5.3→4.8 · fail% 4.2/3.3/3.8/1.4 · 미종결 0/6/4/1. 실패 도구: Bash 38 · Playwright/Chrome 11(09-01에만) · StructuredOutput 7 · Read 5 · Artifact 2 · Agent 1
+- L3 subagent: general-purpose Start 6 · cctv-status 1(09-04 E2E) · claude-code-guide 1. Skill 호출 8 · Agent 호출 9 (스킬 종류 불명 — G1)
+- L4 probe: 브라우저 MCP 실패 09-01 11건 → probe 배선(09-04) 이후 0건. 실전 질문→승인 흐름 관측 0회(스펙 verify 미충족 상태 유지)
+- L5 collector: health ok · launchd pid 1499 running · 행 15 · took_ms 912 · 스키마 이탈 1(G3)
+- 발견: dispatch 왕복은 정상 시 3분 내(4/4). 지연 신호 1건이 실측 첫 사례 — 팀원 자가 보고(soft 규약) 미이행 여부는 다음 틱에서 확인
+- 잔여: 미검증 3(probe 실전 흐름, dispatch 지연 사례의 원인, G5 회신 매칭 정확도). 검증 범위 5/5 루프 측정 성공

@@ -8,6 +8,7 @@
 - 관측면 = **cctv** (`cctv/` 파이썬 패키지 — 2026-09-03 개명 완료)
 - 제어면 = **scaffold**(자산, 첫 채택 능력 때 생성) + 배선기 **wire**(`wire/` 패키지, 설치 기록 `~/.eharness/wire.json`)
 - 이벤트 버스 = `~/.eharness/events/*.jsonl`
+- 루프 실측 대장 = `design/loop-log.md` (append-only, 기록 세션 그룹 `loop-eng` — 2026-09-04 개시)
 - 설계 배경 문서(정본 아님): claude.ai/code 아티팩트 "eharness 리뉴얼 설계"
 
 목표 형상 (폴더는 첫 채택 능력이 요구할 때 생성):
