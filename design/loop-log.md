@@ -52,3 +52,11 @@
 - L2 turn: prompts 1 · fail 0 · 미종결 0 (기록 세션 자신 포함)
 - L3~L4: 없음 · L5: health ok · took_ms 994
 - 잔여: #0001의 미검증 3 → 2 (지연 원인 확인됨)
+
+### #0003 2026-09-04 05:41Z · 창 04:58→05:41Z (69건, 세션 3) — 계측 보강 배선 + 기록 세션 자신의 dispatch 왕복
+
+- L1 dispatch: 리더 ethan-87→eharness-96(기록 세션) 발송 2건(05:38:11Z 임무 이관 · 05:39:52Z G 보강 통지). 1건 회신 0.5분(05:38:38Z), 2건은 본 항목 커밋 직후 회신. 리더 사칭 여부 확인 없이 접수함 — 계층(manual.json parents)에 ethan-87→eharness-96 등록은 없음 → "계층이 곧 권한" 규약이 수신 측에는 적용되지 않는 실측 1호
+- 계측 보강(리더 배선, 05:39Z 수집기 재시작, 스키마 v1 유지 가산 필드): G1 `skill` · G2 `agent_type`/`subagent_type` · G3 이벤트명 정규화(sessionEnd→SessionEnd, 이후 이탈로 계수 안 함) · G4 Notification `msg` · G5 uds 발송 `to_name`. 측정 스크립트 v2로 갱신
+- 보강 후 실측(05:39→05:41Z, 16건): G1 skill 채움 1/1(g-test 합성) · G4 msg 채움 1/1(합성, "permission") · G2 subagent 이벤트 0건 → 채움율 측정 불가(다음 실 subagent 때) · G5 uds 발송 0건(기록 세션 회신은 재시작 전 05:38Z라 to_name 없음 — 본 항목 직후 회신이 첫 실검증)
+- L2 turn: prompts 9 · fail 0 · 미종결 2(진행 중 턴) · L3: 없음 · L4: 브라우저 MCP 실패 0 · L5: health ok · took_ms 692
+- 잔여: G2 채움율·G5 to_name 실검증 2건 대기, 미검증 2 유지(probe 실전 흐름·회신 매칭 정확도는 G5 확인 시 해소)
