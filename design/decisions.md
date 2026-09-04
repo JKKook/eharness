@@ -21,6 +21,8 @@
 - 2026-09-04 [조사] 하네스 구성 요소 공식 문서 대조(code.claude.com/docs) — 기존 9개 중 8개 유지, verifier→verification 표현 변경, CC는 AGENTS.md 아닌 CLAUDE.md만 읽음, 신규 7종(Skills·Plugins·Workflows·Agent Teams·Auto Memory·rules/·Tool Search). "모델 세대 재검증"은 공식 체크리스트 없음(프루닝 권고만) — 우리는 운영 규칙으로 채택
 - 2026-09-04 [채택] charter §4 구성 요소 설계 기준(유형별 불변 원칙 7: 지침 적정고도·프루닝, 상시/온디맨드 분리, 훅=결정론만, 도구 우선·MCP, 서브에이전트=격리 목적, 검증=실행 가능+작업자/평가자 분리, 최소 권한) + 운영 규칙 4(모델 세대 변경 = 전 능력 재검증·감가 게이트). 커버리지 바인딩은 map에
 - 2026-09-04 [게이트 통과] probe(실측 테스트 게이트) — ①증거: 브라우저 무단 실행 반복 교정(no-browser 피드백) + 정적 검증만으로 오판한 사례, 사용자 직접 요청 ②자산: Playwright MCP는 이미 전역 등록 — 없는 건 사용 규약뿐 ③경계: 제어면 스킬 ④되돌림: wire probe --uninstall ⑤선언: specs/probe.md. 훅이 아닌 스킬인 이유: "실측 필요" 판단이 개입되는 권고적 행동(charter §4)
+- 2026-09-04 [완료] A2 잔여 수치화(Quantify the residual, khaness 이관) — 전역 CLAUDE.md 4원칙에 추가: 완료 주장 시 미해결·미검증 수와 검증 범위(X/Y) 보고, 절대 표현 금지
+- 2026-09-04 [완료] A3 위협 모델 명문화(khaness 이관) — charter 운영 규칙: 게이트는 심층 방어, 진짜 경계는 커밋 diff의 사람 검토
 - 2026-09-04 [완료] A1 git 리포 초기화 — 목적: 변경 이력·복구 기준·diff 리뷰 경계의 전제. 규칙: 변경은 의미 단위로 커밋(decisions 항목과 함께). 같은 날 원격 연결(사용자 제공): github.com/JKKook/eharness — 푸시는 gh JKKook 계정 전환 경유(이 머신 활성 계정은 ethan-outlier)
 - 2026-09-04 [완료] 리포 CLAUDE.md 신설 — R0 때 누락(사용자 지적). design/ 정본 포인터 + 실수 방지 줄만(§4 프루닝 기준): 게이트 순서 강제, ~/.claude 직접 편집 금지, cctv 읽기 전용, 무개입 훅, verify 명령, decisions 기록 의무
 - 2026-09-04 [완료] probe — scaffold/skills/probe-playwright(지침 전용 스킬: 판정 기준 3 + 질문 게이트 + 최소 범위 실측 + 탭 정리), `wire probe --install`. verify: 설치·status 확인, 실전(질문→승인→실측) 검증은 첫 해당 에러 때 기록 예정
