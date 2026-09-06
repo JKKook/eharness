@@ -27,6 +27,8 @@ def install(port=DEFAULT_PORT):
     open(PLIST, "w").write(TEMPLATE.format(label=LABEL, python=sys.executable, bin=BIN, port=port, log=os.path.join(EH_HOME, "collect.log")))
     subprocess.run(["launchctl", "bootout", f"gui/{os.getuid()}/{LABEL}"], capture_output=True)
     subprocess.run(["launchctl", "bootstrap", f"gui/{os.getuid()}", PLIST], check=True)
+    # bootout 직후 bootstrap 은 잡이 'loaded, not running' 으로 남을 수 있다(2026-09-06 install.sh 실측) → 명시 기동
+    subprocess.run(["launchctl", "kickstart", "-k", f"gui/{os.getuid()}/{LABEL}"], capture_output=True)
     print(f"installed {PLIST}\nlog: {EH_HOME}/collect.log")
 
 

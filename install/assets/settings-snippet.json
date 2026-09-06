@@ -1,0 +1,49 @@
+{
+ "hooks": {
+  "UserPromptSubmit": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "~/.claude/hooks/prompt-start.sh"
+     }
+    ]
+   }
+  ],
+  "PreToolUse": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "~/.claude/hooks/tool-start.sh"
+     }
+    ]
+   }
+  ],
+  "PostToolUse": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "~/.claude/hooks/tool-end.sh"
+     }
+    ]
+   }
+  ],
+  "Stop": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "~/.claude/hooks/turn-end.sh"
+     }
+    ]
+   }
+  ]
+ },
+ "statusLine": {
+  "type": "command",
+  "command": "~/.claude/statusline.sh",
+  "refreshInterval": 1
+ }
+}

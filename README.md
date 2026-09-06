@@ -13,6 +13,16 @@ eharness events [-f] [--sid X] [--days N] [--json]  # 이벤트 버스 조회
 eharness doctor                               # 비공개 포맷 필드 존재 점검
 ```
 
+## 설치 (macOS · Linux · WSL2 · Windows)
+```
+bash install/install.sh              # macOS · Linux · WSL2  (리포 없으면 스크립트만 받아 실행 → clone)
+& install\install.ps1                # Windows 네이티브 PowerShell (Git for Windows + Python 3.10+ 필요)
+bash install/install.sh --check      # 검증만 — 두 스크립트가 같은 8항목을 같은 이름으로 보고
+```
+설치 내용은 플랫폼 공통: CLI(`~/.local/bin/eharness`) · 외부 자산(`install/assets` → `~/.claude/hooks/*.sh`, `statusline.sh`) · settings.json 병합(`install/merge_settings.py`, 멱등)
+· `hooks --install` · wire 5능력(init·comm·status·dispatch·probe) · 수집기 상시 기동(macOS launchd / Linux systemd / Windows 로그온 작업).
+플랫폼 차이는 터미널 통합뿐 — 터미널 컬럼·cmux 트리는 macOS 전용, Windows 네이티브는 jq 없으면 외부 자산 생략.
+
 ## 데이터 소스 (전부 읽기 전용)
 | 지표 | 소스 |
 |---|---|
