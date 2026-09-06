@@ -31,6 +31,7 @@ eharness/                ← 리포·CLI 이름은 우산(eharness) 유지
 | 실측 테스트 게이트 (probe) | 있음 | 채택 (운용 중) | 2026-09-04 배선 — `probe-playwright` 스킬: 루프 에러가 실측 필요 시 **사용자 질문 승인 후에만** Playwright 진행(최초 human-approve 능력). no-browser 원칙의 공식 예외 경로 |
 | 관제 요약 (status) | 있음 | 채택 (운용 중) | 2026-09-04 배선 — `cctv-status` 서브에이전트(첫 agent 자산): API 대형 JSON을 대신 읽고 ≤15줄 요약만 부모 반환(charter §4 격리·요약 기준 1호 적용). 에이전트는 지연 로드됨(즉시 아님·재시작 불요 — 2026-09-04 정정) |
 | 지시 분배 (dispatch) | 있음 | 채택 (운용 중) | 2026-09-04 배선 — `cctv-dispatch` 스킬: **리더 전용**(children 없으면 발송 중단·등록 안내, 계층이 곧 권한), 자식(=팀원)별 지시를 SendMessage로 병렬 분배 + 회신 규약(결과 요약·잔여 수치화). 의존 comm. 실전 왕복 검증은 첫 사용 시 |
+| 관측 시작 (init) | 있음 | 채택 (운용 중) | 2026-09-06 배선 — `cctv-init` 스킬: 수집기 생존 확인 → launchd/systemd 깨우기 → 없으면 nohup 기동 → 세션 수·훅 on/off 보고. Windows(WSL2)·Linux에서 launchd 전용 `collect --install` 대체 경로. 스펙 `specs/init.md` |
 | khaness 퇴역·이관 | — | **완료 2026-09-04** | 이관 판정표 실행 완료 — guard-policy만 보류 후보로 khaness 리포에 보존 |
 | 골 온톨로지 (goal) | 없음 | 보류 | what 영토(`~/.eharness/state/`) 1호 후보. 장기 다세션 작업에서 목표 유실 증거 2회 시 재판정 |
 | 플랜/런타임 분리 | 없음 | 보류 | 플랜은 spec 스킬군에 있음. 런타임 가드 상태파일의 pain 증거 대기 |
