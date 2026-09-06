@@ -99,6 +99,19 @@ def _abs_command(cmd):
     return cmd if os.path.isabs(cmd) else os.path.join(ROOT, cmd)
 
 
+def _bash():
+    """bash 경로 — PATH 우선, Windows는 Git for Windows 기본 위치. 없으면 설치 거부(검증 불가)."""
+    b = shutil.which("bash")
+    if not b and os.name == "nt":
+        for c in (r"C:\Program Files\Git\bin\bash.exe", r"C:\Program Files\Git\usr\bin\bash.exe",
+                  os.path.expandvars(r"%LOCALAPPDATA%\Programs\Git\bin\bash.exe")):
+            if os.path.exists(c):
+                b = c; break
+    if not b:
+        raise SystemExit("거부: bash 를 찾을 수 없어 스크립트 검증 불가 — Git for Windows(Git Bash) 설치 필요")
+    return b
+
+
 def _validate(a):
     """설치 전 자산 검증 — 문법 깨진 스크립트·불완전한 훅 선언은 배선 자체를 거부한다."""
     for name in a["skills"]:
@@ -107,7 +120,7 @@ def _validate(a):
             for f in files:
                 if f.endswith(".sh"):
                     p = os.path.join(root, f)
-                    r = subprocess.run(["bash", "-n", p], capture_output=True, text=True)
+                    r = subprocess.run([_bash(), "-n", p], capture_output=True, text=True)
                     if r.returncode != 0:
                         raise SystemExit(f"거부: 스크립트 문법 오류 {p} — {r.stderr.strip()}")
     for decl in a["hooks"]:

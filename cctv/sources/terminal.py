@@ -91,7 +91,7 @@ def _cmux_env():
     if not env.get("CMUX_SOCKET_CAPABILITY") and _cap["token"]:   # cmux 밖(launchd)에서는 세션의 capability 로 인증
         env["CMUX_SOCKET_CAPABILITY"] = _cap["token"]
     if not env.get("CMUX_SOCKET_PATH"):
-        sock = os.path.expanduser(f"~/.local/state/cmux/cmux-{os.getuid()}.sock")
+        sock = os.path.expanduser(f"~/.local/state/cmux/cmux-{getattr(os, 'getuid', lambda: 0)()}.sock")
         if os.path.exists(sock):
             env["CMUX_SOCKET_PATH"] = sock
     return env

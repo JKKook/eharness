@@ -74,7 +74,7 @@ class Handler(BaseHTTPRequestHandler):
         if u.path == "/api/debug":
             from .sources import terminal
             return self._send(200, json.dumps({"terminal_last": terminal.LAST, "env": {k: os.environ.get(k) for k in ("HOME", "PATH", "CMUX_SOCKET_PATH")},
-                                               "uid": os.getuid(), "cwd": os.getcwd()}, ensure_ascii=False).encode())
+                                               "uid": getattr(os, "getuid", lambda: None)(), "cwd": os.getcwd()}, ensure_ascii=False).encode())
         if u.path == "/api/manual":
             from . import manual
             return self._send(200, json.dumps(manual.load(), ensure_ascii=False).encode())

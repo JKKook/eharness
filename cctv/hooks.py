@@ -11,7 +11,7 @@ EVENTS = ("SessionStart", "SessionEnd", "UserPromptSubmit", "PreToolUse", "PostT
 SETTINGS = os.path.join(CLAUDE_HOME, "settings.json")
 
 
-SCRIPT = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "hooks", "post-event.sh")
+SCRIPT = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "hooks", "post-event.sh").replace("\\", "/")   # Windows: 훅은 sh(Git Bash)가 실행 → 슬래시 경로
 
 
 def _ours(h, port):
